@@ -26,12 +26,12 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Console.WriteLine("*****************************************");
             Console.WriteLine("*\tMENU\t\t\t\t*");
             Console.WriteLine("*\t\t\t\t\t*");
-            Console.WriteLine("*\t\"S\"\tView Student List\t*");
-            Console.WriteLine("*\t\"I\"\tView Available Items\t*");
-            Console.WriteLine("*\t\"A\"\tView Student Accounts\t*");
-            Console.WriteLine("*\t\"C\"\tCheckout Item\t\t*");
-            Console.WriteLine("*\t\"R\"\tReturn Item\t\t*");
-            Console.WriteLine("*\t\"X\"\tExit\t\t\t*");
+            Console.WriteLine("*\tS    View <S>tudent List\t*");
+            Console.WriteLine("*\tI    View Available <I>tems\t*");
+            Console.WriteLine("*\tA    View Student <A>ccounts\t*");
+            Console.WriteLine("*\tC    <C>heckout Item\t\t*");
+            Console.WriteLine("*\tR    <R>eturn Item\t\t*");
+            Console.WriteLine("*\tX    E<x>it\t\t\t*");
             Console.WriteLine("*\t\t\t\t\t*");
             Console.WriteLine("*****************************************");
             Console.WriteLine();
@@ -42,6 +42,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
         }
 
         //Presents the student list to the user
+        //uses the List "studentList" which is sent as a parameter
         static void PrintStudentList(List<string> studentList)
         {
             int num = 1;
@@ -59,6 +60,8 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
         }
 
         //Presents the available items to the user
+        //uses the Dictionary "resourceDictionary", sent as a parameter, which is a dictionary of all resources
+        //returns a List "availableResources", which is a list of only the available resources, not all
         static List<string> PrintAvailableResources(Dictionary<string, string> resourceDictionary) 
         {
             List<string> availableResources = new List<string>();
@@ -68,17 +71,23 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Console.WriteLine("*\t\t\t\t\t*");
             int num = 0;
             bool allCheckedOut = true;
-            foreach(KeyValuePair<string, string> pair in resourceDictionary)
+            foreach(KeyValuePair<string, string> pair in resourceDictionary)  //go through all pairs and print only available resources
             {
-                if (pair.Value == "")
+                if (pair.Value == "")   //if the value is blank, it is available
                 {
                     num++;
-                    Console.WriteLine($"*\t{num}.  {pair.Key,-28}*");
+                    StringBuilder output = new StringBuilder();
+                    output.Append("*\t");
+                    output.Append(num);
+                    output.Append(".  ");
+                    output.Append(pair.Key);
+                    output.ToString();
+                    Console.WriteLine("{0,-34}*", output);
                     availableResources.Add(pair.Key);
                     allCheckedOut = false;
                 }
             }
-            if (allCheckedOut)
+            if (allCheckedOut)  //if no values are blank, all resources are checked out
             {
                 Console.WriteLine("*\t(All resources checked out)\t*");
             }
@@ -89,6 +98,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
         }
 
         //Presents the student account to the user
+        //uses List "studentList", Dictionary "studentIDDictionary", Dictionary "resourceDictionary", sent as parameters
         static void PrintStudentAccount(List<string> studentList, Dictionary<string, int> studentIDDictionary, Dictionary<string, string> resourceDictionary)
         {
             bool validNum = false;
@@ -106,7 +116,12 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             bool noResources = true;
             Console.WriteLine();
             Console.WriteLine("*****************************************");
-            Console.WriteLine($"*\t{studentName.ToUpper()}'S ACCOUNT\t\t*");
+            StringBuilder output = new StringBuilder();
+            output.Append("*\t");
+            output.Append(studentName.ToUpper());
+            output.Append("'S ACCOUNT");
+            output.ToString();
+            Console.WriteLine("{0,-34}*", output);
             Console.WriteLine("*\t\t\t\t\t*");
             foreach (KeyValuePair<string, string> pair in resourceDictionary)
             {
@@ -124,9 +139,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Console.WriteLine("*\t\t\t\t\t*");
             Console.WriteLine("*****************************************");
             Console.WriteLine();
-            Console.Write("Would you like to print the student account? ");
+            Console.Write("Would you like to print the student account? (Please enter y/n) ");
             string response = Console.ReadLine().ToUpper();
-            if (response == "Y")
+            if (response == "Y" || response == "YES")
             {
                 ResetScreen();
                 UpdateStudentTextFile(studentName, studentIDDictionary, resourceDictionary);
@@ -161,7 +176,6 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                 if (numResources.Count() > 0)
                 {
                     int resourceNum = -1;
-                    validNum = false;
                     do
                     {
                         Console.Write("Please enter the number of the resource (or 0 to exit without checking out): ");
@@ -224,7 +238,12 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             int resourceNum;
             Console.WriteLine();
             Console.WriteLine("*****************************************");
-            Console.WriteLine($"*\t{studentName.ToUpper()}'S ACCOUNT\t\t\t*");
+            StringBuilder output = new StringBuilder();
+            output.Append("*\t");
+            output.Append(studentName.ToUpper());
+            output.Append("'S ACCOUNT");
+            output.ToString();
+            Console.WriteLine("{0,-34}*", output);
             Console.WriteLine("*\t\t\t\t\t*");
 
             List<string> studentResourceList = new List<string>();
@@ -369,9 +388,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
 
         static void PrintCheckedOutTextFile (Dictionary<string, string> resourceDictionary)
         {
-            Console.Write("Would you like to print a list of checked out resources? ");
+            Console.Write("Would you like to print a list of checked out resources? (Please enter y/n) ");
             string response = Console.ReadLine().ToUpper();
-            if (response == "Y")
+            if (response == "Y" || response == "YES" )
             {
                 ResetScreen();
                 UpdateCheckedOutTextFile(resourceDictionary);
