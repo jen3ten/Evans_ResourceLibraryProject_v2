@@ -9,7 +9,8 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
 {
     class Program
     {
-        //Clears the screen and prints the title
+        //ResetScreen() clears the screen and prints the title
+        //ResetScreen() has no parameters and no returns
         static void ResetScreen()
         {
             Console.Clear();
@@ -19,7 +20,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Console.WriteLine();
         }
 
-        //Presents the main menu to the user
+        //Menu() presents the main menu to the user
+        //Menu() has no parameters
+        //Menu() returns the user's menu selection as string data type
         static string Menu()
         {
             //Print a menu of user options, including letter codes used to access the options
@@ -41,8 +44,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             return menuOption.ToUpper();       //User can enter a lower case or upper case menu option
         }
 
-        //Presents the student list to the user
-        //uses the List "studentList" which is sent as a parameter
+        //PrintStudentList() presents the student list to the user
+        //PrintStudentList() has a parameter of type List called "studentList", which holds a list of student names
+        //PrintStudentList() has no return value
         static void PrintStudentList(List<string> studentList)
         {
             int num = 1;
@@ -51,7 +55,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Console.WriteLine("*\t\t\t\t\t*");
             foreach (string student in studentList)
             {
-                Console.WriteLine($"*\t{num}.  {student,-28}*");
+                Console.WriteLine($"*{num,9}.  {student,-27}*");        //the line numbers are right justified; names are left justified
                 num++;
             }
             Console.WriteLine("*\t\t\t\t\t*");
@@ -59,9 +63,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Console.WriteLine();
         }
 
-        //Presents the available items to the user
-        //uses the Dictionary "resourceDictionary", sent as a parameter, which is a dictionary of all resources
-        //returns a List "availableResources", which is a list of only the available resources, not all
+        //PrintAvailableResources() presents the available items to the user
+        //PrintAvailableResources() has a paramater of type Dictionary called "resourceDictionary", which is a dictionary of all resources and who checked them out
+        //PrintAvailableResources() returns type List called "availableResources", which is a list of only the available resources
         static List<string> PrintAvailableResources(Dictionary<string, string> resourceDictionary) 
         {
             List<string> availableResources = new List<string>();
@@ -76,15 +80,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                 if (pair.Value == "")   //if the value is blank, it is available
                 {
                     num++;
-                    StringBuilder output = new StringBuilder();
-                    output.Append("*\t");
-                    output.Append(num);
-                    output.Append(".  ");
-                    output.Append(pair.Key);
-                    output.ToString();
-                    Console.WriteLine("{0,-34}*", output);
+                    Console.WriteLine($"*{num,9}.  {pair.Key,-27}*");   //the line numbers are right justified; resources are left justified
                     availableResources.Add(pair.Key);
-                    allCheckedOut = false;
+                    allCheckedOut = false;                              //If there is a blank, all resources are not checked out
                 }
             }
             if (allCheckedOut)  //if no values are blank, all resources are checked out
@@ -97,74 +95,84 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             return availableResources;
         }
 
-        //Presents the student account to the user
-        //uses List "studentList", Dictionary "studentIDDictionary", Dictionary "resourceDictionary", sent as parameters
+        //PrintStudentAccout() presents the student account to the user
+        //PrintStudentAccout() has paramenters of type List called "studentList", and type Dictionary called "studentIDDictionary" and "resourceDictionary"
+            //"studentList" is a list of all students
+            //"studentIDDictionary" is a dictionary of student names and their student IDs
+            //"resourceDictionary" is a dictionary of resources and who checked them out
+        //PrintStudentAccout() has no return value  
         static void PrintStudentAccount(List<string> studentList, Dictionary<string, int> studentIDDictionary, Dictionary<string, string> resourceDictionary)
         {
             bool validNum = false;
             int studentNum = 0;
             int numStudents = studentList.Count();
+            //First the PrintStudentList() method must be called to present a list of students to the user
+            //Then PrintStudentAccout() allows the user to choose a student from the list by number
             do
             {
                 Console.Write("Please enter the number of a student to view their account: ");
-                validNum = int.TryParse(Console.ReadLine(), out studentNum);
-                if (studentNum < 1 || studentNum > numStudents)
+                validNum = int.TryParse(Console.ReadLine(), out studentNum);    //the input must be an integer...
+                if (studentNum < 1 || studentNum > numStudents)                 //..that falls between 1 and the number of students
                     validNum = false;
             } while (!validNum);
-            string studentName = studentList[studentNum - 1];
+            string studentName = studentList[studentNum - 1];                   //the student's name is extracted from the list by index number
             int num = 1;
             bool noResources = true;
             Console.WriteLine();
             Console.WriteLine("*****************************************");
-            StringBuilder output = new StringBuilder();
+            StringBuilder output = new StringBuilder();                         
             output.Append("*\t");
             output.Append(studentName.ToUpper());
             output.Append("'S ACCOUNT");
             output.ToString();
             Console.WriteLine("{0,-34}*", output);
             Console.WriteLine("*\t\t\t\t\t*");
-            foreach (KeyValuePair<string, string> pair in resourceDictionary)
+            foreach (KeyValuePair<string, string> pair in resourceDictionary)   //Loop through all key value pairs in resourceDictionary
             {
-                if (pair.Value == studentName)
+                if (pair.Value == studentName)                                  //When the value equals the student name...
                 {
-                    Console.WriteLine($"*\t{num}.  {pair.Key,-28}*");
+                    Console.WriteLine($"*\t{num}.  {pair.Key,-28}*");           //...print the name of the resource they checked out
                     num++;
                     noResources = false;
                 }
             }
-            if (noResources)
+            if (noResources)                                                    //...or let the user know that they didn't check out any resources
             {
                 Console.WriteLine("*\t(No resources checked out)\t*");
             }
             Console.WriteLine("*\t\t\t\t\t*");
             Console.WriteLine("*****************************************");
             Console.WriteLine();
-            Console.Write("Would you like to print the student account? (Please enter y/n) ");
+            Console.Write("Would you like to print the student account? (Please enter y/n) ");  //The user may print the student account from text file
             string response = Console.ReadLine().ToUpper();
             if (response == "Y" || response == "YES")
             {
                 ResetScreen();
-                UpdateStudentTextFile(studentName, studentIDDictionary, resourceDictionary);
-                PrintStudentTextFile(studentName, studentIDDictionary);
+                UpdateStudentTextFile(studentName, studentIDDictionary, resourceDictionary);    //Update the text file
+                PrintStudentTextFile(studentName, studentIDDictionary);                         //Print the text file to the screen
             }
         }
 
-        //Allows user to checkout an item
+        //CheckoutResource() allows user to checkout an item
+        //CheckoutResource() has parameters of type List called "studentList" which has a list of students, and type Dictionary called "resourceDictionary" which holds a list of resources and who checked them out
+        //CheckoutResources() does not return a value
         static void CheckoutResource(List<string> studentList, Dictionary<string, string> resourceDictionary)
         {
             bool validNum = false;
             int studentNum = 0;
             int numStudents = studentList.Count();
+            //First the PrintStudentList() method must be called to present a list of students to the user
+            //Then CheckoutResources() allows the user to choose a student from the list by number
             do
             {
                 Console.Write("Please enter the number of the student who wishes to check out a resource: ");
-                validNum = int.TryParse(Console.ReadLine(), out studentNum);
-                if (studentNum < 1 || studentNum > numStudents)
+                validNum = int.TryParse(Console.ReadLine(), out studentNum);            //The input must be an integer...
+                if (studentNum < 1 || studentNum > numStudents)                         //..that falls between 1 and the number of students
                     validNum = false;
             } while (!validNum);
             Console.WriteLine();
-            string studentName = studentList[studentNum - 1];
-            bool maxResources = MaxResources(studentName, resourceDictionary);
+            string studentName = studentList[studentNum - 1];                           //The students name is extracted from the list by index number
+            bool maxResources = MaxResources(studentName, resourceDictionary);      //Call maxResources() method to see if maximum resources checked out
             if (maxResources)
             {
                 Console.WriteLine($"{studentName} has checked out a maximum number of 3 resources.");
@@ -172,14 +180,14 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             }
             else
             { 
-                List<string> numResources = PrintAvailableResources(resourceDictionary);
+                List<string> numResources = PrintAvailableResources(resourceDictionary);    //Print list of available resources
                 if (numResources.Count() > 0)
                 {
                     int resourceNum = -1;
                     do
                     {
                         Console.Write("Please enter the number of the resource (or 0 to exit without checking out): ");
-                        validNum = int.TryParse(Console.ReadLine(), out resourceNum);
+                        validNum = int.TryParse(Console.ReadLine(), out resourceNum);       //The input is checked for validity
                         if (validNum == false)
                             continue;
                         if (resourceNum == 0)
@@ -190,8 +198,8 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                         }
                         else
                         {
-                            string resource = numResources[resourceNum - 1];
-                            resourceDictionary[resource] = studentName;
+                            string resource = numResources[resourceNum - 1];        //The name of the resources is extracted from the list by index number
+                            resourceDictionary[resource] = studentName;             //The resource key is assigned to the value of the student's name
                             Console.WriteLine();
                             Console.WriteLine($"{studentName} has checked out \"{resource}\"");
                         }
@@ -200,38 +208,44 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             }
         }
         
-        //Checks to see if user already checked out the maximum of 3 resources
+        //MaxResources() checks to see if user already checked out the maximum of 3 resources
+        //MaxResources() has parameters of type string called "studentName" that holds the students name and type Dictionary called "resourceDictionary" that holds the names of the resources and who checked them out
+        //MaxResources() has a return value of type bool, which is set to true if the maximum number of resources have been checked out
         static bool MaxResources(string studentName, Dictionary<string, string> resourceDictionary)
         {
             bool maxResources = false;
             int count = 0;
-            foreach (KeyValuePair<string, string> pair in resourceDictionary)
+            foreach (KeyValuePair<string, string> pair in resourceDictionary)       //Loop through all key value pairs in resourceDictionary
             {
-                if (pair.Value == studentName)
+                if (pair.Value == studentName)                                      //Count each time the student's name is found
                 {
                     count++;
                 }
             }
-            if (count >= 3)
+            if (count >= 3)                                                         //If the count is 3 or more, maximum resources have been checked out
                 maxResources = true;
-            return maxResources;
+            return maxResources;                                                    //The method returns a true or false value
         }
 
-        //Allows user to return a resource
+        //ReturnResources() allows user to return a resource
+        //ReturnResources() has parameters of type List called "studentList" that holds a list of student names and type Dictionary called "resourceDictionary" that holds a list of resources and who checked them out
+        //ReturnResources() does not return a value
         static void ReturnResource(List<string> studentList, Dictionary<string, string> resourceDictionary)
         {
             bool validNum = false;
             int studentNum = 0;
             int numStudents = studentList.Count();
+            //First the PrintStudentList() method must be called to present a list of students to the user
+            //Then ReturnResources() allows the user to choose a student from the list by number
             do
             {
                 Console.Write("Please enter the number of the student who wishes to return a resource: ");
-                validNum = int.TryParse(Console.ReadLine(), out studentNum);
+                validNum = int.TryParse(Console.ReadLine(), out studentNum);            //The user input is checked for validity
                 if (studentNum < 1 || studentNum > numStudents)
                     validNum = false;
             } while (!validNum);
             Console.WriteLine();
-            string studentName = studentList[studentNum - 1];
+            string studentName = studentList[studentNum - 1];                           //The student's name is extracted from the list by index number
 
             int num = 0;
             bool noResources = true;
@@ -246,15 +260,15 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Console.WriteLine("{0,-34}*", output);
             Console.WriteLine("*\t\t\t\t\t*");
 
-            List<string> studentResourceList = new List<string>();
+            List<string> studentResourceList = new List<string>();                  //A new list is declared to temporarily hold the student's resources
 
-            foreach (KeyValuePair<string, string> pair in resourceDictionary)
+            foreach (KeyValuePair<string, string> pair in resourceDictionary)       //Check each key value pair in resourceDictionary
             {
-                if (pair.Value == studentName)
+                if (pair.Value == studentName)                                      //If the student's name is found...
                 {
                     num++;
-                    Console.WriteLine($"*\t{num}.  {pair.Key,-28}*");
-                    studentResourceList.Add(pair.Key);
+                    Console.WriteLine($"*\t{num}.  {pair.Key,-28}*");               //...the name of the resource is printed to the screen
+                    studentResourceList.Add(pair.Key);                              //and the name of the resource is added to the list
                     noResources = false;
                 }
             }
@@ -270,7 +284,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                 do
                 {
                     Console.Write("Please enter the number of the resource (or 0 to exit without returning an item): ");
-                    validNum = int.TryParse(Console.ReadLine(), out resourceNum);
+                    validNum = int.TryParse(Console.ReadLine(), out resourceNum);           //Check user input for validity
                     if (validNum == false)
                         continue;
                     if (resourceNum == 0)
@@ -281,8 +295,8 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                     }
                     else
                     {
-                        string resource = studentResourceList[resourceNum - 1];
-                        resourceDictionary[resource] = "";
+                        string resource = studentResourceList[resourceNum - 1];         //Look up the name of the resource from the list by index
+                        resourceDictionary[resource] = "";                              //Set the value to "" for the resource name in resourceDictionary
                         Console.WriteLine();
                         Console.WriteLine($"{studentName} has returned \"{resource}\"");
                     }
@@ -290,32 +304,34 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             }
         }
 
-        //Update student account text file
+        //UpdateStudentTextFile() updates the student account text file
+        //UpdateStudentTextFile() has parameters of type string called "studentName" that holds the student's name, and type Dictionary called "studentIDDictionary" that holds student names and IDs and "resourceDictionary" that holds resource names and who checked them out
+        //UpdateStudentTextFile() has no return value
         static void UpdateStudentTextFile(string studentName, Dictionary<string, int> studentIDDictionary, Dictionary<string, string> resourceDictionary )
         {
-            string[] name = studentName.Split();
+            string[] name = studentName.Split();                    //The students name is split into a string array of first name and last name
 
-            StringBuilder studentFileName = new StringBuilder();
-            studentFileName.Append(name[0].ToUpper());
-            studentFileName.Append(name[1].ToUpper());
-            studentFileName.Append(studentIDDictionary[studentName]);
+            StringBuilder studentFileName = new StringBuilder();    //The StringBuilder builds the file name consisting of the student's...
+            studentFileName.Append(name[0].ToUpper());                  //...first name
+            studentFileName.Append(name[1].ToUpper());                  //...last name
+            studentFileName.Append(studentIDDictionary[studentName]);   //...and student ID
             studentFileName.Append(".txt");
 
-            StringBuilder nameLine = new StringBuilder();
+            StringBuilder nameLine = new StringBuilder();           //The StringBuilder builds the student name line for the text file
             nameLine.Append("Student Name: ");
             nameLine.Append(studentName);
             nameLine.ToString();
 
-            StringBuilder idLine = new StringBuilder();
+            StringBuilder idLine = new StringBuilder();             //The StringBuilder builds the student ID line for the text file
             idLine.Append("Student ID: ");
             idLine.Append(studentIDDictionary[studentName]);
             idLine.ToString();
 
-            StreamWriter writeStudentAcct = new StreamWriter(studentFileName.ToString());
-            writeStudentAcct.WriteLine("BOOTCAMP RESOURCE LIBRARY STUDENT ACCOUNT INFORMATION");
+            StreamWriter writeStudentAcct = new StreamWriter(studentFileName.ToString());       //StreamWriter is created to write to the student file
+            writeStudentAcct.WriteLine("BOOTCAMP RESOURCE LIBRARY STUDENT ACCOUNT INFORMATION");//Header information is added to the text file
             writeStudentAcct.WriteLine();
-            writeStudentAcct.WriteLine(nameLine);
-            writeStudentAcct.WriteLine(idLine);
+            writeStudentAcct.WriteLine(nameLine);                                               //includeing the students name
+            writeStudentAcct.WriteLine(idLine);                                                 //...and their student ID
             writeStudentAcct.WriteLine();
             writeStudentAcct.WriteLine("Resources Checked Out: ");
             bool noResources = true;
@@ -323,7 +339,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             {
                 if (pair.Value == studentName)
                 {
-                    writeStudentAcct.WriteLine(pair.Key);
+                    writeStudentAcct.WriteLine(pair.Key);                                     //All the student's resources are written to the file
                     noResources = false;
                 }
             }
@@ -333,15 +349,18 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             }
             writeStudentAcct.Close();
         }
-        
+
+        //UpdateCheckedOutTextFile() updates the text file of checked out resources
+        //UpdateCheckedOutTextFile() has a parameter of type Dictionary called "resourceDictionary" that holds resource names and the student who has checked them out
+        //UpdateCheckedOutTextFile() has no return values
         static void UpdateCheckedOutTextFile (Dictionary<string, string> resourceDictionary)
         {
-            StreamWriter writeCheckedOut = new StreamWriter("BootcampResourcesCheckedOut.txt");
-            writeCheckedOut.WriteLine("BOOTCAMP RESOURCE LIBRARY CHECKED OUT RESOURCES");
+            StreamWriter writeCheckedOut = new StreamWriter("BootcampResourcesCheckedOut.txt");     //StreamWriter is created to write to the text file
+            writeCheckedOut.WriteLine("BOOTCAMP RESOURCE LIBRARY CHECKED OUT RESOURCES");           //Header information is written to the text file
             writeCheckedOut.WriteLine();
             writeCheckedOut.WriteLine("Resources Checked Out: ");
             bool noResources = true;
-            foreach (KeyValuePair<string, string> pair in resourceDictionary)
+            foreach (KeyValuePair<string, string> pair in resourceDictionary)               
             {
                 if (pair.Value != "")
                 {
@@ -353,7 +372,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                     checkedOutLine.Append(pair.Value);
                     checkedOutLine.ToString();
 
-                    writeCheckedOut.WriteLine(checkedOutLine);
+                    writeCheckedOut.WriteLine(checkedOutLine);                    //The resource name and who checked it out is written to the text file
                     noResources = false;
                 }
             }
@@ -364,17 +383,20 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             writeCheckedOut.Close();
         }
 
+        //PrintStudentTextFile() prints the student account text file to the screen
+        //PrintStudentTextFile() has parameters of type string called "studentName" that holds the student's name and type Dictionary called "studentIDDictionary" that holds all student names and IDs
+        //PrintStudentTextFile() has no return values
         static void PrintStudentTextFile(string studentName, Dictionary<string, int> studentIDDictionary)
         {
-            string[] name = studentName.Split();
+            string[] name = studentName.Split();                //The student's name is split into a string array of student's first and last name
 
-            StringBuilder studentFileName = new StringBuilder();
-            studentFileName.Append(name[0].ToUpper());
-            studentFileName.Append(name[1].ToUpper());
-            studentFileName.Append(studentIDDictionary[studentName]);
+            StringBuilder studentFileName = new StringBuilder();            //A StringBuilder builds the file name consisting of the student's...
+            studentFileName.Append(name[0].ToUpper());                          //...first name
+            studentFileName.Append(name[1].ToUpper());                          //...last name
+            studentFileName.Append(studentIDDictionary[studentName]);           //...and student ID
             studentFileName.Append(".txt");
 
-            StreamReader readStudentAccount = new StreamReader(studentFileName.ToString());
+            StreamReader readStudentAccount = new StreamReader(studentFileName.ToString());     //StreamReader is declared to read from the file
             string line = "";
             do
             {
@@ -386,6 +408,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             readStudentAccount.Close();
         }
 
+        //PrintCheckedOutTextFile() prints the text file containing all checked out resources and who checked them out
+        //PrintCheckedOutTextFile() has a parameter of type Dictionary called "resourceDictionary" that holds a list of resources and which student checked them out
+        //PrintCheckedOutTextFile() has no return values
         static void PrintCheckedOutTextFile (Dictionary<string, string> resourceDictionary)
         {
             Console.Write("Would you like to print a list of checked out resources? (Please enter y/n) ");
@@ -393,8 +418,8 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             if (response == "Y" || response == "YES" )
             {
                 ResetScreen();
-                UpdateCheckedOutTextFile(resourceDictionary);
-                StreamReader readCheckedOut = new StreamReader("BootcampResourcesCheckedOut.txt");
+                UpdateCheckedOutTextFile(resourceDictionary);                                       //First the text file is updated
+                StreamReader readCheckedOut = new StreamReader("BootcampResourcesCheckedOut.txt");  //Then the file is read
                 string line = "";
                 do
                 {
@@ -404,7 +429,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                 readCheckedOut.Close();
             }
         }
-
+        
+        //Main() is the main method of this program
+        //Main() declares all lists and dictionaries and calls all methods based on the user's main menu selection
         static void Main(string[] args)
         {
             ResetScreen();
@@ -414,10 +441,20 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             
             //studentList list holds the name of all students
             List<string> studentList = new List<string>();
-            studentList.Add("Jen Evans");
+            studentList.Add("Jennifer Evans");
             studentList.Add("Mary Winkleman");
             studentList.Add("Kim Vargas");
             studentList.Add("Imari Childress");
+            studentList.Add("Quinn Bennett");
+            studentList.Add("Sirahn Butler");
+            studentList.Add("Richard Raponi");
+            studentList.Add("Cameron Robinson");
+            studentList.Add("Krista Scholdberg");
+            studentList.Add("Ashley Stewart");
+            studentList.Add("Cadale Thomas");
+            studentList.Add("Margaret Landefeld");
+            studentList.Add("Lawrence Hudson");
+            studentList.Add("Jacob Lockyer");
             studentList.Sort();
 
             //Resources list holds the name of all resources
@@ -434,88 +471,82 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             resourceList.Add("Hooray for Arrays!");
             resourceList.Sort();
 
-            //Resource dictionary holds keys with the resource names and values equal to name of student who checked out item, or blank
-            //if not checked out
+            //Resource dictionary holds keys with the resource names and values equal to name of student who checked out item, or blank if not checked out
             //The dictionary is initialized with resource names from the resourceList
             Dictionary<string, string> resourceDictionary = new Dictionary<string, string>();
             foreach (string resource in resourceList)
             {
-                resourceDictionary.Add(resource, "");
+                resourceDictionary.Add(resource, "");                                       //Resource names and "" are added to the dictionary
             }
 
-            //The following is for testing purposes
-            //resourceDictionary["C# for Dummies"] = "Jen";
-            //resourceDictionary["JavaScript"] = "Jen";
-            //resourceDictionary["Getting Along with Git"] = "Jen";
-
             //StudentID dictionary holds keys with the student names and values equal to the student ID
-            //The dictionary is initialized with student names from the studentList and a 3 digit ID number
+            //The dictionary is initialized with student names from the studentList and unique integer ID number
             Dictionary<string, int> studentIDDictionary = new Dictionary<string, int>();
-            int studentID = 310;
+            int studentID = 33;
             foreach (string student in studentList)
             {
-                studentIDDictionary.Add(student, studentID);
-                UpdateStudentTextFile(student, studentIDDictionary, resourceDictionary);
-                studentID = studentID / 2 + 50;
+                studentIDDictionary.Add(student, studentID);                                //Student names and IDs are added to the dictionary
+                UpdateStudentTextFile(student, studentIDDictionary, resourceDictionary);    //Update the student text file for every student
+                studentID = studentID + 57;         
             }
 
             do
             {
-                string menuOption = Menu();
-                switch (menuOption)
+                string menuOption = Menu();                                                 //Present the main menu to the user
+                switch (menuOption)                                                         //Run code based on the menu option chosen by the user
                 {
-                    case "S":
-                        ResetScreen();
-                        PrintStudentList(studentList);
-                        Console.Write("Press any key to return to the Menu...");
+                    case "S":               //"View Student List" menu option
+                        ResetScreen();                                                      //Clear screen; print title
+                        PrintStudentList(studentList);                                      //Print the student list
+                        Console.Write("Press any key to return to the Menu...");            //The user presses a key to continue
                         Console.ReadKey();
-                        ResetScreen();
-                        break;
-                    case "I":
-                        ResetScreen();
-                        List<string> unused = PrintAvailableResources(resourceDictionary);
-                        PrintCheckedOutTextFile(resourceDictionary);
-                        Console.Write("Press any key to return to the Menu...");
+                        ResetScreen();                                                      //Clear screen; print title
+                        break;                                                              //The do-while loop continues; Menu() is called
+                    case "I":               //"View Available Items" menu option
+                        ResetScreen();                                                      //Clear screen; print title
+                        List<string> unused = PrintAvailableResources(resourceDictionary);  //Print the available resources
+                        PrintCheckedOutTextFile(resourceDictionary);                        //Allow user to print checked out resources text file
+                        Console.Write("Press any key to return to the Menu...");            //The user presses a key to continue
                         Console.ReadKey();
-                        ResetScreen();
-                        break;
-                    case "A":
-                        ResetScreen();
-                        PrintStudentList(studentList);
-                        PrintStudentAccount(studentList, studentIDDictionary, resourceDictionary);
-                        Console.Write("Press any key to return to the Menu...");
+                        ResetScreen();                                                      //Clear screen; print title
+                        break;                                                              //The do-while loop continues; Menu() is called
+                    case "A":               //"View Student Account" menu option
+                        ResetScreen();                                                      //Clear screen; print title
+                        PrintStudentList(studentList);                                      //Print the student list
+                        PrintStudentAccount(studentList, studentIDDictionary, resourceDictionary);  //Print the student account
+                        Console.Write("Press any key to return to the Menu...");            //The user presses a key to continue
                         Console.ReadKey();
-                        ResetScreen();
-                        break;
-                    case "C":
-                        ResetScreen();
-                        PrintStudentList(studentList);
-                        CheckoutResource(studentList, resourceDictionary);
-                        Console.Write("Press any key to return to the Menu...");
+                        ResetScreen();                                                      //Clear screen; print title
+                        break;                                                              //The do-while loop continues; Menu() is called
+                    case "C":               //"Checkout Item" menu option
+                        ResetScreen();                                                      //Clear screen; print title
+                        PrintStudentList(studentList);                                      //Print the student list
+                        CheckoutResource(studentList, resourceDictionary);                  //Allow the user to checkout a resource
+                        Console.Write("Press any key to return to the Menu...");            //The user presses a key to continue
                         Console.ReadKey();
-                        ResetScreen();
-                        break;
-                    case "R":
-                        ResetScreen();
-                        PrintStudentList(studentList);
-                        ReturnResource(studentList, resourceDictionary);
-                        Console.Write("Press any key to return to the Menu...");
+                        ResetScreen();                                                      //Clear screen; print title
+                        break;                                                              //The do-while loop continues; Menu() is called
+                    case "R":               //"Return Item" menu option
+                        ResetScreen();                                                      //Clear screen; print title
+                        PrintStudentList(studentList);                                      //Print the student list
+                        ReturnResource(studentList, resourceDictionary);                    //Allow the user to return a resource
+                        Console.Write("Press any key to return to the Menu...");            //The user presses a key to continue
                         Console.ReadKey();
-                        ResetScreen();
-                        break;
-                    case "X":
-                        ResetScreen();
-                        Console.WriteLine("Goodbye!");
+                        ResetScreen();                                                      //Clear screen; print title
+                        break;                                                              //The do-while loop continues; Menu() is called
+                    case "X":               //"Exit" menu option
+                        ResetScreen();                                                      //Clear screen; print title
+                        Console.WriteLine("Goodbye!");                                      //Gives the user a "Goodbye" message
                         Console.WriteLine();
-                        runProgram = false;
+                        runProgram = false;                                                 //Breaks out of do-while loop
                         break;
                     default:
-                        ResetScreen();
-                        Console.WriteLine("The code you entered was not found.  Please enter a valid code.");
+                        ResetScreen();                                                      //Clear screen; print title
+                        Console.WriteLine("The code you entered was not found.  Please enter a valid code."); //User is warned that invalid entry was made
                         Console.WriteLine();
-                        break;
+                        break;                                                              //The do-while loop continues; Menu() is called
                 }
-            } while (runProgram);
+            } while (runProgram);                                                           //The loop continues while runProgram is true                 
         }
     }
 }
