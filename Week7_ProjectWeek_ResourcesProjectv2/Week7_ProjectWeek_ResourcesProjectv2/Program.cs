@@ -29,12 +29,15 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Console.WriteLine("*****************************************");
             Console.WriteLine("*\tMENU\t\t\t\t*");
             Console.WriteLine("*\t\t\t\t\t*");
-            Console.WriteLine("*\tS    View <S>tudent List\t*");
-            Console.WriteLine("*\tI    View Available <I>tems\t*");
-            Console.WriteLine("*\tA    View Student <A>ccounts\t*");
-            Console.WriteLine("*\tC    <C>heckout Item\t\t*");
-            Console.WriteLine("*\tR    <R>eturn Item\t\t*");
+            Console.WriteLine("*\tS    View <S>tudent List\t*");            //S for Students
+            Console.WriteLine("*\tR    View All <R>esources\t*");             //Change to R for Resources
+            Console.WriteLine("*\tA    View <A>vailable Resources\t*");         //Change to A for Available
+            Console.WriteLine("*\tE    <E>dit Resources\t\t*");               //E for Edit
+            Console.WriteLine("*\tC    View Student A<c>counts\t*");        //Change to C for Accounts
+            Console.WriteLine("*\tO    Check <O>ut Resource\t*");              //Change to O for Check out
+            Console.WriteLine("*\tI    Check <I>n Resource\t*");                //Change to I for Check In
             Console.WriteLine("*\tX    E<x>it\t\t\t*");
+            Console.WriteLine("*\tT    TESTING");
             Console.WriteLine("*\t\t\t\t\t*");
             Console.WriteLine("*****************************************");
             Console.WriteLine();
@@ -107,7 +110,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             int studentNum = 0;
             int numStudents = studentList.Count();
             //First the PrintStudentList() method must be called to present a list of students to the user
-            //Then PrintStudentAccout() allows the user to choose a student from the list by number
+            //Then PrintStudentAccount() allows the user to choose a student from the list by number
             do
             {
                 Console.Write("Please enter the number of a student to view their account: ");
@@ -208,7 +211,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             }
         }
         
-        //MaxResources() checks to see if user already checked out the maximum of 3 resources
+        //MaxResources() checks to see if the student already checked out the maximum of 3 resources
         //MaxResources() has parameters of type string called "studentName" that holds the students name and type Dictionary called "resourceDictionary" that holds the names of the resources and who checked them out
         //MaxResources() has a return value of type bool, which is set to true if the maximum number of resources have been checked out
         static bool MaxResources(string studentName, Dictionary<string, string> resourceDictionary)
@@ -446,7 +449,6 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             studentList.Add("Kim Vargas");
             studentList.Add("Imari Childress");
             studentList.Add("Quinn Bennett");
-            studentList.Add("Sirahn Butler");
             studentList.Add("Richard Raponi");
             studentList.Add("Cameron Robinson");
             studentList.Add("Krista Scholdberg");
@@ -456,6 +458,8 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             studentList.Add("Lawrence Hudson");
             studentList.Add("Jacob Lockyer");
             studentList.Sort();
+
+            //Instantiate the student objects
 
             //Resources list holds the name of all resources
             List<string> resourceList = new List<string>();
@@ -470,6 +474,26 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             resourceList.Add("Scrum 101");
             resourceList.Add("Hooray for Arrays!");
             resourceList.Sort();
+
+            //Instantiate the DVD objects
+            DVD dvd1 = new DVD("C# for Dummies", "09-23423-5434", 67);
+            DVD dvd2 = new DVD("Getting Along with Git", "09-34322-123", 124);
+            DVD dvd3 = new DVD("JavaScript", "09-6335-123", 81);
+            
+            //Add DVD objects to a list
+            List<DVD> DVDList = new List<DVD>();
+            DVDList.Add(dvd1);
+            DVDList.Add(dvd2);
+            DVDList.Add(dvd3);
+
+            Book book1 = new Book("Database Design", "08-541324-1234", 320);
+            Book book2 = new Book("SQL Queries", "08-1243-212", 197);
+            Book book3 = new Book("C# Player's Guide", "08-52342-23", 94);
+
+            Magazine magazine1 = new Magazine("HTML & CSS", "07-4322-232", 38);
+            Magazine magazine2 = new Magazine("Agile Methodology", "07-34122-6324", 52);
+            Magazine magazine3 = new Magazine("Scrum 101", "07-1234-5423", 40);
+            Magazine magazine4 = new Magazine("Hooray for Arrays!", "07-63208-45", 23);
 
             //Resource dictionary holds keys with the resource names and values equal to name of student who checked out item, or blank if not checked out
             //The dictionary is initialized with resource names from the resourceList
@@ -502,7 +526,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                         Console.ReadKey();
                         ResetScreen();                                                      //Clear screen; print title
                         break;                                                              //The do-while loop continues; Menu() is called
-                    case "I":               //"View Available Items" menu option
+                    case "R":               //"View All Resources" menu option
+                        break;
+                    case "A":               //"View Available Resources" menu option
                         ResetScreen();                                                      //Clear screen; print title
                         List<string> unused = PrintAvailableResources(resourceDictionary);  //Print the available resources
                         PrintCheckedOutTextFile(resourceDictionary);                        //Allow user to print checked out resources text file
@@ -510,7 +536,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                         Console.ReadKey();
                         ResetScreen();                                                      //Clear screen; print title
                         break;                                                              //The do-while loop continues; Menu() is called
-                    case "A":               //"View Student Account" menu option
+                    case "E":               //"Edit Resources" menu option
+                        break;
+                    case "C":               //"View Student Account" menu option
                         ResetScreen();                                                      //Clear screen; print title
                         PrintStudentList(studentList);                                      //Print the student list
                         PrintStudentAccount(studentList, studentIDDictionary, resourceDictionary);  //Print the student account
@@ -518,7 +546,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                         Console.ReadKey();
                         ResetScreen();                                                      //Clear screen; print title
                         break;                                                              //The do-while loop continues; Menu() is called
-                    case "C":               //"Checkout Item" menu option
+                    case "O":               //"Checkout Resource" menu option
                         ResetScreen();                                                      //Clear screen; print title
                         PrintStudentList(studentList);                                      //Print the student list
                         CheckoutResource(studentList, resourceDictionary);                  //Allow the user to checkout a resource
@@ -526,7 +554,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                         Console.ReadKey();
                         ResetScreen();                                                      //Clear screen; print title
                         break;                                                              //The do-while loop continues; Menu() is called
-                    case "R":               //"Return Item" menu option
+                    case "I":               //"CheckIn Resource" menu option
                         ResetScreen();                                                      //Clear screen; print title
                         PrintStudentList(studentList);                                      //Print the student list
                         ReturnResource(studentList, resourceDictionary);                    //Allow the user to return a resource
@@ -539,6 +567,13 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                         Console.WriteLine("Goodbye!");                                      //Gives the user a "Goodbye" message
                         Console.WriteLine();
                         runProgram = false;                                                 //Breaks out of do-while loop
+                        break;
+                    case "T":               //"Test" menu option
+                        foreach(DVD item in DVDList)
+                        {
+                            Console.WriteLine(item.Title);
+
+                        }
                         break;
                     default:
                         ResetScreen();                                                      //Clear screen; print title
