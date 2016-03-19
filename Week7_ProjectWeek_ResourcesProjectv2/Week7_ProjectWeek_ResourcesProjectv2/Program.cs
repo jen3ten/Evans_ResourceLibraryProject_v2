@@ -66,7 +66,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Magazine magazine3 = new Magazine("Scrum 101", "07-1234-5423", 40);
             Magazine magazine4 = new Magazine("Hooray for Arrays!", "07-63208-45", 23);
 
-            //Checkout some resources, for interest when program first starts
+            //Checkout some resources, to make the program interesting when it first starts
             dvd1.CheckedOut = "Jennifer Evans";
             book2.CheckedOut = "Mary Winkleman";
             magazine4.CheckedOut = "Kim Vargas";
@@ -104,26 +104,26 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                 {
                     case "S":               //"View Student List" menu option
                         ResetScreen();                                                      //Clear screen; print title
-                        PrintStudentList(studentList);                                      //Print the student list
+                        PrintStudentList();                                      //Print the student list
                         PressKey();
                         ResetScreen();                                                      //Clear screen; print title
                         break;                                                              //The do-while loop continues; Menu() is called
                     case "R":               //"View All Resources" menu option
                         ResetScreen();
-                        PrintResourceList(resourceList);
+                        PrintResourceList();
                         PressKey();
                         ResetScreen();
                         break;
                     case "A":               //"View Available Resources" menu option
                         ResetScreen();                                                      //Clear screen; print title
                         List<string> unused = PrintAvailableResources(resourceList);        //Print the available resources
-                        PrintCheckedOutTextFile(resourceList);                        //Allow user to print checked out resources text file
+                        PrintCheckedOutTextFile();                                          //Allow user to print checked out resources text file
                         PressKey();
                         ResetScreen();                                                      //Clear screen; print title
                         break;                                                              //The do-while loop continues; Menu() is called
                     case "E":               //"Edit Resources" menu option
                         ResetScreen();
-                        PrintResourceList(resourceList);
+                        PrintResourceList();
                         bool edited = EditResource(resourceList);
                         if (edited)                                                         //If the resource was edited, then...
                         {
@@ -138,21 +138,21 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                         break;
                     case "C":               //"View Student Account" menu option
                         ResetScreen();                                                      //Clear screen; print title
-                        PrintStudentList(studentList);                                      //Print the student list
-                        PrintStudentAccount(studentList, resourceList);  //Print the student account
+                        PrintStudentList();                                                 //Print the student list
+                        PrintStudentAccount(studentList, resourceList);                     //Print the student account
                         PressKey();
                         ResetScreen();                                                      //Clear screen; print title
                         break;                                                              //The do-while loop continues; Menu() is called
                     case "O":               //"Checkout Resource" menu option
                         ResetScreen();                                                      //Clear screen; print title
-                        PrintStudentList(studentList);                                      //Print the student list
+                        PrintStudentList();                                                 //Print the student list
                         CheckoutResource(studentList, resourceList);                        //Allow the user to checkout a resource
                         PressKey();
                         ResetScreen();                                                      //Clear screen; print title
                         break;                                                              //The do-while loop continues; Menu() is called
                     case "I":               //"CheckIn Resource" menu option
                         ResetScreen();                                                      //Clear screen; print title
-                        PrintStudentList(studentList);                                      //Print the student list
+                        PrintStudentList();                                                 //Print the student list
                         ReturnResource(studentList, resourceList);                          //Allow the user to return a resource
                         PressKey();
                         ResetScreen();                                                      //Clear screen; print title
@@ -217,7 +217,8 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             return menuOption.ToUpper();       //User can enter a lower case or upper case menu option
         } //Menu()
 
-        //UpdateStudentListTextFile()
+        //UpdateStudentListTextFile() writes student names from the studentList to the student list text file
+        //UpdateStudentListTextFile() uses a List parameter of type Student called "studentList".  It has no return value.
         static void UpdateStudentListTextFile(List<Student> studentList)
         {
             StreamWriter writeStudentList = new StreamWriter("BootcampStudentList.txt");
@@ -228,10 +229,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             writeStudentList.Close();
         } //UpdateStudentListTextFile()
 
-        //PrintstudentList() presents the student list to the user
-        //PrintStudentList() has a parameter of List of type Student called "studentList", which holds a list of Student objects
-        //PrintStudentList() has no return value
-        static void PrintStudentList(List<Student> studentList)
+        //PrintstudentList() reads the student list from the student list text file and prints student names to the console
+        //PrintStudentList() has no parameters and no return value
+        static void PrintStudentList()
         {
             int num = 1;
             string line = "";
@@ -253,10 +253,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Console.WriteLine();
         }
 
-        //PrintResourceList() presents the resource list to the user
-        //PrintResourceList() has a parameter of List of type Resource called "resourceList", which holds a list of resource ojbects
-        //PrintResourceList() has no return value
-        static void PrintResourceList(List<Resource> resourceList)
+        //PrintResourceList() reads the resource list from the resource list text file and prints the resource names to the user
+        //PrintResourceList() has no parameters and return values
+        static void PrintResourceList()
         {
             int num = 1;
             string line = "";
@@ -300,30 +299,21 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                 }
                 else
                 {
-                    //The name of the resources is extracted from the list by index number
-                    string resource = resourceList[resourceNum - 1].Title; 
-                    //?? Call EditResourceProperties() Method based on resource; resourceList[resourceNum - 1].EditResourceProperties(); ???
-                    foreach (Resource item in resourceList)
+                    //Call the ViewTitle() method from Resource class to print resource parameters to console
+                    resourceList[resourceNum - 1].ViewTitle();
+                    Console.WriteLine();
+                    Console.Write("Would you like to edit this {0}? (Please enter y/n) ", resourceList[resourceNum - 1].Type);
+                    string response = Console.ReadLine().ToUpper();
+                    if (response == "Y" || response == "YES")
                     {
-                        if (item.Title == resource)
-                        {
-                            //Call the ViewTitle() method from Resource class to print resource parameters to console
-                            item.ViewTitle();
-                            Console.WriteLine();
-                            Console.Write("Would you like to edit this {0}? (Please enter y/n) ", item.Type);  
-                            string response = Console.ReadLine().ToUpper();
-                            if (response == "Y" || response == "YES")
-                            {
-                                //Call the EditResourceProperties() method from Resource class to all editing of object parameters
-                                edited = true;
-                                item.EditResourceProperties();
-                                Console.WriteLine();
-                                Console.WriteLine("This {0} has been edited.",item.Type);
-                                item.ViewTitle();
-                                Console.WriteLine();
-                                PressKey();
-                            }
-                        }
+                        //Call the EditResourceProperties() method from Resource class to allow editing of object parameters
+                        edited = true;
+                        resourceList[resourceNum - 1].EditResourceProperties();
+                        Console.WriteLine();
+                        Console.WriteLine("This {0} has been edited.", resourceList[resourceNum - 1].Type);
+                        resourceList[resourceNum - 1].ViewTitle();
+                        Console.WriteLine();
+                        PressKey();
                     }
                 }
             } while (!validNum);
@@ -342,9 +332,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             Console.WriteLine("*\t\t\t\t\t*");
             int num = 0;
             bool allCheckedOut = true;
-            foreach (Resource item in resourceList)  //go through all pairs and print only available resources
+            foreach (Resource item in resourceList)  //go through all resources in resourceList and print only available resources
             {
-                if (item.CheckedOut == "")   //if the value is blank, it is available
+                if (item.CheckedOut == "")   //if the CheckedOut property is blank, it is available
                 {
                     num++;
                     Console.WriteLine($"*{num,5}.  {item.Title+ " (" + item.Type + ")",-31}*");   //the line numbers are right justified; resources are left justified
@@ -362,9 +352,9 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             return availableResources;
         }
 
-        //PrintStudentAccount() 
-        //PrintStudentAccount()
-        //PrintStudentAccount()
+        //PrintStudentAccount() allows the user to choose a student from the list and prints all resources they have checked out
+        //PrintStudentAccount() has two list parameters.  List of type Student called "studentList" and list of type Resource called "resourceList"
+        //PrintStudentAccount() has no return values
         static void PrintStudentAccount(List<Student> studentList, List<Resource> resourceList)
         {
             bool validNum = false;
@@ -466,7 +456,7 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                             {
                                 if (item.Title == resource)
                                 {
-                                    item.CheckedOut = studentName;          //The CheckedOut property is assigned to the student's name
+                                    item.CheckedOut = studentName;         //The CheckedOut property is assigned to the student's name
                                     Console.WriteLine();
                                     item.CheckOut(studentName);
                                     studentList[studentNum - 1].UpdateStudentAcctTextFile(resourceList);    //Update the text file
@@ -481,15 +471,15 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
         } //CheckoutResource()
 
         //MaxResources() checks to see if the student already checked out the maximum of 3 resources
-        //MaxResources() has parameters of type string called "studentName" that holds the students name and type Dictionary called "resourceDictionary" that holds the names of the resources and who checked them out
+        //MaxResources() has parameters of type string called "studentName" that holds the students name and List of type Resource called "resourceList" that holds the names of the resources
         //MaxResources() has a return value of type bool, which is set to true if the maximum number of resources have been checked out
         static bool MaxResources(string studentName, List<Resource> resourceList)
         {
             bool maxResources = false;
             int count = 0;
-            foreach (Resource item in resourceList)       //Loop through all key value pairs in resourceDictionary
+            foreach (Resource item in resourceList)                                 //Loop through all resources in resourceList
             {
-                if (item.CheckedOut == studentName)                                      //Count each time the student's name is found
+                if (item.CheckedOut == studentName)                                 //Count each time the student's name is found
                 {
                     count++;
                 }
@@ -497,10 +487,10 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
             if (count >= 3)                                                         //If the count is 3 or more, maximum resources have been checked out
                 maxResources = true;
             return maxResources;                                                    //The method returns a true or false value
-        }
+        } //MaxResources()
 
         //ReturnResources() allows user to return a resource
-        //ReturnResources() has parameters of type List called "studentList" that holds a list of student names and type Dictionary called "resourceDictionary" that holds a list of resources and who checked them out
+        //ReturnResources() has two List parameters of type Student called "studentList" that holds a list of student names and type Resource called "resourceList" that holds a list of resources
         //ReturnResources() does not return a value
         static void ReturnResource(List<Student> studentList, List<Resource> resourceList)
         {
@@ -534,13 +524,13 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
 
             List<string> studentResourceList = new List<string>();                  //A new list is declared to temporarily hold the student's resources
 
-            foreach (Resource item in resourceList)       //Check each key value pair in resourceDictionary
+            foreach (Resource item in resourceList)                                 //Check each resource in resourceList
             {
-                if (item.CheckedOut == studentName)                                      //If the student's name is found...
+                if (item.CheckedOut == studentName)                                 //If the student's name is found...
                 {
                     num++;
                     Console.WriteLine($"*{num,5}.  {item.Title + " (" + item.Type + ")",-31}*");
-                    studentResourceList.Add(item.Title);                              //and the name of the resource is added to the list
+                    studentResourceList.Add(item.Title);                            //the title of the resource is added to the student's resource list
                     noResources = false;
                 }
             }
@@ -573,8 +563,8 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                             if (item.Title == resource)
                             {
                                 item.CheckedOut = "";
-                                studentList[studentNum - 1].UpdateStudentAcctTextFile(resourceList);    //Update the text file
-                                UpdateCheckedOutTextFile(resourceList);
+                                studentList[studentNum - 1].UpdateStudentAcctTextFile(resourceList);    //Update the student account text file
+                                UpdateCheckedOutTextFile(resourceList);                                 //Update the checked out resources text file
                             }
                         }
                         Console.WriteLine();
@@ -583,10 +573,10 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
                     }
                 } while (!validNum);
             }
-        } //MaxResources()
+        } //ReturnResources()
 
         //UpdateCheckedOutTextFile() updates the text file of checked out resources
-        //UpdateCheckedOutTextFile() has a parameter of type Dictionary called "resourceDictionary" that holds resource names and the student who has checked them out
+        //UpdateCheckedOutTextFile() has a List parameter of type Resource called "resourceList" that holds resource objects
         //UpdateCheckedOutTextFile() has no return values
         static void UpdateCheckedOutTextFile(List<Resource> resourceList)
         {
@@ -618,9 +608,8 @@ namespace Week7_ProjectWeek_ResourcesProjectv2
         } //UpdateCheckedOutTextFile()
 
         //PrintCheckedOutTextFile() prints the text file containing all checked out resources and who checked them out
-        //PrintCheckedOutTextFile() has a parameter of type Dictionary called "resourceDictionary" that holds a list of resources and which student checked them out
-        //PrintCheckedOutTextFile() has no return values
-        static void PrintCheckedOutTextFile (List<Resource> resourceList)
+        //PrintCheckedOutTextFile() has no parameters and no return values
+        static void PrintCheckedOutTextFile ()
         {
             Console.Write("Would you like to print a list of checked out resources? (Please enter y/n) ");
             string response = Console.ReadLine().ToUpper();
